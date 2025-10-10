@@ -1,17 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
-  const { products } = useContext(ShopContext);
+  // search, showSearch used to apply the logic for the search bar to work
+  const { products, search, showSearch } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   // for map product section
   const [filterProduct, setFilterProduct] = useState([]);
   // logic for the filters
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
+  // const [filterProduct, ]
+  const [sortType, setSortType] = useState("relevant");
 
   // category section
   const toggleCategory = (e) => {
@@ -36,6 +39,13 @@ const Collection = () => {
     // using this (products.slice()), it will create on copy of the poducts array in this variable (productsCopy)
     let productsCopy = products.slice();
 
+    // to make the searchbar work
+    if (showSearch && search) {
+      productsCopy = productsCopy.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
     // to make the filter in the category section work onClick
     // "category.length > 0" means if we have selected any category in the filter
     if (category.length > 0) {
@@ -50,7 +60,6 @@ const Collection = () => {
         subCategory.includes(item.subCategory)
       );
     }
-
     setFilterProduct(productsCopy);
   };
 
@@ -61,10 +70,31 @@ const Collection = () => {
   //   setFilterProduct(products);
   // }, []);
 
-  // run the function applyFilters whenever the category array or subCategory array gets updated
+  // Logic for SORTING proruct
+  const sortProduct = () => {
+    // fpCopy = filterProductCopy
+    let fpCopy = filterProduct.slice();
+
+    switch (sortType) {
+      case "low-high":
+        setFilterProduct(fpCopy.sort((a, b) => a.price - b.price));
+        break;
+
+      case "high-low":
+        setFilterProduct(fpCopy.sort((a, b) => b.price - a.price));
+        break;
+
+      default:
+        applyFilter();
+        break;
+    }
+  };
+
+  // run the function applyFilters whenever the category array or subCategory array gets updated instead of the ones below this code
+  // Alos, run the function applyFilters whenever the search and showSearch are applied.
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory]);
+  }, [category, subCategory, search, showSearch]);
 
   // // for category
   // useEffect(() => {
@@ -77,6 +107,11 @@ const Collection = () => {
   //   // setSubCategory(console.log(category);
   //   console.log(subCategory);
   // }, [subCategory]);
+
+  // FOR THE SORT FILTER
+  useEffect(() => {
+    sortProduct();
+  }, [sortType]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -175,7 +210,11 @@ const Collection = () => {
         <div className="flex justify-between text-base sm:text-2xl mb-4">
           <Title text1={"ALL"} text2={"COLLECTIONS"} />
           {/* Prouct Sort */}
-          <select className="border border-gray-300 text-sm px-2">
+          {/* "onChange={(e)=>setSortType(e.target.value)}" makes the sort filter work */}
+          <select
+            onChange={(e) => setSortType(e.target.value)}
+            className="border border-gray-300 text-sm px-2"
+          >
             <option value="relevant">Sort by: Relevant</option>
             <option value="low-high">Sort by: Low to High</option>
             <option value="high-low">Sort by: High to Low</option>

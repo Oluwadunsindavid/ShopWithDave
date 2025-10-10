@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   // Function to open and close menu
   const [visible, setVisible] = useState(false);
+
+  // to make the search icon work when you click on it, call it from the ShopContext.jsx page. N.B The code for the search is in the SearchBar.jsx
+  const { setShowSearch } = useContext(ShopContext);
 
   return (
     <div className="flex items-center justify-between py-5 font-medium">
@@ -31,7 +35,20 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-6">
-        <img src={assets.search_icon} className="w-5 cursor-pointer" alt="" />
+        {/* THIS IS THE REAL CODE OF THE PROJECT. "onClick={()=>setShowSearch(true)}" opens the search bar */}
+        <img
+          onClick={() => setShowSearch(true)}
+          src={assets.search_icon}
+          className="w-5 cursor-pointer"
+          alt="Search"
+        />
+        {/* THIS IS MY OWN CODE FOR THIS SECTION OF THE PROJECT. to make sure that when you click the search icon, it oepns the search bar and when you click again, it closes back the search bar after if opens it. NOTE: The closing icon the search,jsx page still works */}
+        {/* <img
+          onClick={() => setShowSearch((prev) => !prev)}
+          src={assets.search_icon}
+          className="w-5 cursor-pointer"
+          alt="Search"
+        /> */}
 
         <div className=" group relative">
           <img
