@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { products } from "../assets/assets";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
 
@@ -14,6 +15,8 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   //   for the cart page when you click the add to cart button, initialized with empty onject
   const [cartItems, setCartItems] = useState({});
+  //   For the "PROCEED TO CHECKOUT" button on the cart.jsx page and thw "PLACE ORDER" button on the PlaceOrder.jsx page. When you click on the button, it takes you to another page
+  const navigate = useNavigate(); 
 
   const addToCart = async (itemId, size) => {
     // if size is not selected
@@ -95,7 +98,7 @@ const ShopContextProvider = (props) => {
     addToCart,
     getCartCount,
     updateQuantity,
-    getCartAmount,
+    getCartAmount, navigate
   };
 
   return (
