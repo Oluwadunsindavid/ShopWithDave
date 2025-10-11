@@ -55,16 +55,33 @@ const ShopContextProvider = (props) => {
     return totalCount;
   };
 
-//  For the cart.jsx page, the delete icon. Using this function, we can clear the cartData or we can also modify the cartItems
-const updateQuantity = async (itemId, size, quantity) => {
+  //  For the cart.jsx page, the delete icon. Using this function, we can clear the cartData or we can also modify the cartItems
+  const updateQuantity = async (itemId, size, quantity) => {
     let cartData = structuredClone(cartItems);
 
     cartData[itemId][size] = quantity;
 
     setCartItems(cartData);
-}
+  };
 
-  // the data below can be used anywhere in our work
+  // To display the total cart amount to be used in the CartTotal.jsx page
+  const getCartAmount = () => {
+    let totalAmount = 0;
+    for (const items in cartItems) {
+      let itemInfo = products.find((product) => product._id === items);
+      for (const item in cartItems[items]) {
+        try {
+          if (cartItems[items][item] > 0) {
+            // from "itemInfo.price" we get the product price and from "cartItems[items][item]" we get the product quantity
+            totalAmount += itemInfo.price * cartItems[items][item];
+          }
+        } catch (error) {}
+      }
+    }
+    return totalAmount;
+  };
+
+  // the data/functions that are passed below can be accessed in any other component and used anywhere in our work
   const value = {
     products,
     currency,
@@ -76,7 +93,9 @@ const updateQuantity = async (itemId, size, quantity) => {
     setShowSearch,
     cartItems,
     addToCart,
-    getCartCount, updateQuantity
+    getCartCount,
+    updateQuantity,
+    getCartAmount,
   };
 
   return (
