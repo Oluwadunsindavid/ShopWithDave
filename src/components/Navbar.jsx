@@ -9,6 +9,8 @@ const Navbar = () => {
 
   // to make the search icon work when you click on it, call it from the ShopContext.jsx page. N.B The code for the search is in the SearchBar.jsx
   const { setShowSearch, getCartCount } = useContext(ShopContext);
+  // for navigating the search bar to the collection page whenever you click on it
+  const { navigate } = useContext(ShopContext);
 
   return (
     <div className="flex items-center justify-between py-5 font-medium">
@@ -35,9 +37,21 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-6">
+
         {/* THIS IS THE REAL CODE OF THE PROJECT. "onClick={()=>setShowSearch(true)}" opens the search bar */}
-        <img
+        {/* <img
           onClick={() => setShowSearch(true)}
+          src={assets.search_icon}
+          className="w-5 cursor-pointer bg-red-700"
+          alt="Search"
+        /> */}
+
+        {/* to navigate to the collection page when you click on the search icon */}
+        <img
+          onClick={() => {
+            navigate("/collection");
+            setShowSearch((prev) => !prev);
+          }}
           src={assets.search_icon}
           className="w-5 cursor-pointer"
           alt="Search"
